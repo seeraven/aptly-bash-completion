@@ -9,7 +9,7 @@ This is a bash completion for [aptly](http://www.aptly.info/).
 
 Download bash completions to `/etc/bash_completion.d`:
 
-    sudo wget https://github.com/aptly-dev/aplty-bash-completion/raw/master/aptly -O /etc/bash_completion.d/aptly
+    sudo wget https://github.com/aptly-dev/aptly-bash-completion/raw/master/aptly -O /etc/bash_completion.d/aptly
 
 ### Mac OS X
 
