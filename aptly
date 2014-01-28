@@ -1,0 +1,234 @@
+#!/bin/bash
+
+# (The MIT License)
+#
+# Copyright (c) 2014 Andrey Smirnov
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the 'Software'), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+__aptly_mirror_list()
+{
+  aptly mirror list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
+}
+
+__aptly_snapshot_list()
+{
+  aptly snapshot list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
+}
+
+__aptly_published_distributions()
+{
+  aptly publish list | awk '/^  \* / { n = split($2,a,/\//); print a[n] }' | sort | uniq
+}
+
+__aptly_published_prefixes()
+{
+  aptly publish list | awk '/^  \* / { n = split($2,a,/\//); result = a[1]; for (i = 2; i < n; i++) result = result "/" a[i]; print result }' | sort | uniq
+}
+
+__aptly_prefixes_for_distribution()
+{
+  aptly publish list | awk -v dist="$1" '/^  \* / { n = split($2,a,/\//); result = a[1]; for (i = 2; i < n; i++) result = result "/" a[i]; if (dist == a[n]) print result }' | sort | uniq
+}
+
+_aptly()
+{
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    commands="mirror publish snapshot version"
+    options="-architectures= -dep-follow-all-variants -dep-follow-recommends -dep-follow-suggests"
+
+    mirror_subcommands="create show list update"
+    publish_subcommands="drop list snapshot"
+    snapshot_subcommands="create diff list merge pull show verify"
+
+    local cmd subcmd numargs numoptions i
+
+    numargs=0
+    numoptions=0
+
+    for (( i=1; i < $COMP_CWORD; i++ )); do
+      if [[ -n "$cmd" ]]; then
+        if [[ ! -n "$subcmd" ]]; then
+          subcmd=${COMP_WORDS[i]}
+          numargs=$(( COMP_CWORD - i - 1 ))
+        else
+          if [[ "${COMP_WORDS[i]}" == -* ]]; then
+            numoptions=$(( numoptions + 1 ))
+            numargs=$(( numargs - 1 ))
+          fi
+        fi
+      else
+        if [[ ! "${COMP_WORDS[i]}" == -* ]]; then
+          cmd=${COMP_WORDS[i]}
+        fi
+      fi
+    done
+
+    if [[ ! -n "$cmd" ]];
+    then
+      case "$cur" in
+            -*)
+              COMPREPLY=($(compgen -W "${options}" -- ${cur}))
+              return 0
+            ;;
+            *)
+              COMPREPLY=($(compgen -W "${commands}" -- ${cur}))
+              return 0
+            ;;
+        esac
+    fi
+
+    if [[ ! -n "$subcmd" ]];
+    then
+        case "$prev" in
+            "mirror")
+              COMPREPLY=($(compgen -W "${mirror_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            "snapshot")
+              COMPREPLY=($(compgen -W "${snapshot_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            "publish")
+              COMPREPLY=($(compgen -W "${publish_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            *)
+            ;;
+        esac
+    fi
+
+    case "$cmd" in
+      "mirror")
+        case "$subcmd" in
+          "show")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-with-packages" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+          "update")
+            if [[ $numargs -eq 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
+        esac
+      ;;
+      "snapshot")
+        case "$subcmd" in
+          "create")
+            case $numargs in
+              1)
+                COMPREPLY=($(compgen -W "from" -- ${cur}))
+                return 0
+              ;;
+              2)
+                COMPREPLY=($(compgen -W "mirror" -- ${cur}))
+                return 0
+              ;;
+              3)
+                COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+                return 0
+              ;;
+            esac
+          ;;
+          "diff")
+            if [[ $numargs -eq 0 ]] && [[ "$cur" == -* ]]; then
+              COMPREPLY=($(compgen -W "-only-matching" -- ${cur}))
+              return 0
+            fi
+
+            if [[ $numargs -lt 2 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "merge")
+            if [[ $numargs -gt 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "pull")
+            if [[ $numargs -eq 0 ]] && [[ "$cur" == -* ]]; then
+              COMPREPLY=($(compgen -W "-dry-run -no-deps" -- ${cur}))
+              return 0
+            fi
+
+            if [[ $numargs -lt 2 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "show")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-with-packages" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+          "verify")
+            if [[ $numargs -eq 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
+        esac
+      ;;
+      "publish")
+        case "$subcmd" in
+          "snapshot")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key=" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+
+            if [[ $numargs -eq 1 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_published_prefixes)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "drop")
+            if [[ $numargs -eq 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_published_distributions)" -- ${cur}))
+              return 0
+            fi
+
+            if [[ $numargs -eq 1 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_prefixes_for_distribution $prev)" -- ${cur}))
+              return 0
+            fi
+        esac
+      ;;
+    esac
+} && complete -F _aptly aptly
