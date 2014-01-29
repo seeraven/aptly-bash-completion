@@ -55,9 +55,9 @@ _aptly()
     commands="mirror publish snapshot version"
     options="-architectures= -dep-follow-all-variants -dep-follow-recommends -dep-follow-suggests"
 
-    mirror_subcommands="create show list update"
+    mirror_subcommands="create drop show list update"
     publish_subcommands="drop list snapshot"
-    snapshot_subcommands="create diff list merge pull show verify"
+    snapshot_subcommands="create diff drop list merge pull show verify"
 
     local cmd subcmd numargs numoptions i
 
@@ -129,6 +129,16 @@ _aptly()
               return 0
             fi
           ;;
+          "drop")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-force" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
           "update")
             if [[ $numargs -eq 0 ]]; then
               COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
@@ -163,6 +173,16 @@ _aptly()
 
             if [[ $numargs -lt 2 ]]; then
               COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "drop")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-force" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              fi
               return 0
             fi
           ;;
