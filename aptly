@@ -52,7 +52,7 @@ _aptly()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="mirror publish snapshot version"
+    commands="mirror publish serve snapshot version"
     options="-architectures= -dep-follow-all-variants -dep-follow-recommends -dep-follow-suggests"
 
     mirror_subcommands="create drop show list update"
