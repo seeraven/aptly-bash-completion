@@ -141,7 +141,11 @@ _aptly()
           ;;
           "update")
             if [[ $numargs -eq 0 ]]; then
-              COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-ignore-checksums" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              fi
               return 0
             fi
           ;;
