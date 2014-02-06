@@ -119,6 +119,14 @@ _aptly()
     case "$cmd" in
       "mirror")
         case "$subcmd" in
+          "create")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-ignore-signatures -keyring=" -- ${cur}))
+                return 0
+              fi
+            fi
+          ;;
           "show")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
@@ -142,7 +150,7 @@ _aptly()
           "update")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-ignore-checksums" -- ${cur}))
+                COMPREPLY=($(compgen -W "-ignore-checksums -ignore-signatures -keyring=" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
               fi
@@ -230,7 +238,7 @@ _aptly()
           "snapshot")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key=" -- ${cur}))
+                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key= -skip-signing" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               fi
