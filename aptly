@@ -164,16 +164,20 @@ _aptly()
           "create")
             case $numargs in
               1)
-                COMPREPLY=($(compgen -W "from" -- ${cur}))
+                COMPREPLY=($(compgen -W "from empty" -- ${cur}))
                 return 0
               ;;
               2)
-                COMPREPLY=($(compgen -W "mirror" -- ${cur}))
-                return 0
+                if [[ "$prev" == "from" ]]; then
+                  COMPREPLY=($(compgen -W "mirror" -- ${cur}))
+                  return 0
+                fi
               ;;
               3)
-                COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
-                return 0
+                if [[ "$prev" == "mirror" ]]; then
+                  COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+                  return 0
+                fi
               ;;
             esac
           ;;
