@@ -266,5 +266,11 @@ _aptly()
             fi
         esac
       ;;
+      "serve")
+        if [[ "$cur" == -* ]]; then
+          COMPREPLY=($(compgen -W "-listen=" -- ${cur}))
+          return 0
+        fi
+      ;;
     esac
 } && complete -F _aptly aptly
