@@ -52,9 +52,10 @@ _aptly()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="graph mirror publish serve snapshot version"
+    commands="db graph mirror publish serve snapshot version"
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-suggests"
 
+    db_subcommands="cleanup"
     mirror_subcommands="create drop show list update"
     publish_subcommands="drop list snapshot"
     snapshot_subcommands="create diff drop list merge pull show verify"
@@ -99,6 +100,10 @@ _aptly()
     if [[ ! -n "$subcmd" ]];
     then
         case "$prev" in
+            "db")
+              COMPREPLY=($(compgen -W "${db_subcommands}" -- ${cur}))
+              return 0
+            ;;
             "mirror")
               COMPREPLY=($(compgen -W "${mirror_subcommands}" -- ${cur}))
               return 0
