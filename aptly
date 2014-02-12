@@ -247,7 +247,7 @@ _aptly()
           "snapshot")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key= -skip-signing" -- ${cur}))
+                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key= -keyring= -secret-keyring= -skip-signing" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               fi
