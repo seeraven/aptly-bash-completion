@@ -53,7 +53,7 @@ _aptly()
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     commands="db graph mirror publish serve snapshot version"
-    options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-suggests"
+    options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
     db_subcommands="cleanup"
     mirror_subcommands="create drop show list update"
