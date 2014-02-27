@@ -275,13 +275,17 @@ _aptly()
               ;;
               2)
                 if [[ "$prev" == "from" ]]; then
-                  COMPREPLY=($(compgen -W "mirror" -- ${cur}))
+                  COMPREPLY=($(compgen -W "mirror repo" -- ${cur}))
                   return 0
                 fi
               ;;
               3)
                 if [[ "$prev" == "mirror" ]]; then
                   COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+                  return 0
+                fi
+                if [[ "$prev" == "repo" ]]; then
+                  COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
                   return 0
                 fi
               ;;
