@@ -27,6 +27,11 @@ __aptly_mirror_list()
   aptly mirror list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
 }
 
+__aptly_repo_list()
+{
+  aptly repo list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
+}
+
 __aptly_snapshot_list()
 {
   aptly snapshot list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
@@ -52,13 +57,14 @@ _aptly()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="db graph mirror publish serve snapshot version"
+    commands="db graph mirror publish repo serve snapshot version"
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
     db_subcommands="cleanup"
     mirror_subcommands="create drop show list update"
     publish_subcommands="drop list snapshot"
     snapshot_subcommands="create diff drop list merge pull show verify"
+    repo_subcommands="add copy create drop import list move remove show"
 
     local cmd subcmd numargs numoptions i
 
@@ -106,6 +112,10 @@ _aptly()
             ;;
             "mirror")
               COMPREPLY=($(compgen -W "${mirror_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            "repo")
+              COMPREPLY=($(compgen -W "${repo_subcommands}" -- ${cur}))
               return 0
             ;;
             "snapshot")
@@ -158,6 +168,97 @@ _aptly()
                 COMPREPLY=($(compgen -W "-ignore-checksums -ignore-signatures -keyring=" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+        esac
+      ;;
+      "repo")
+        case "$subcmd" in
+          "add")
+            case $numargs in
+              0)
+                if [[ "$cur" == -* ]]; then
+                  COMPREPLY=($(compgen -W "-remove-files" -- ${cur}))
+                else
+                  COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+                fi
+                return 0
+              ;;
+              1)
+                local files=$(find . -mindepth 1 -maxdepth 1  \( -type d -or -name \*.deb -or -name \*.dsc \) -exec basename {} \;)
+                COMPREPLY=($(compgen -W "${files}" -- ${cur}))
+                return 0
+              ;;
+            esac
+          ;;
+          "copy"|"move")
+            case $numargs in
+              0)
+                if [[ "$cur" == -* ]]; then
+                  COMPREPLY=($(compgen -W "-with-deps -dry-run" -- ${cur}))
+                else
+                  COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+                fi
+                return 0
+              ;;
+              1)
+                COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+                return 0
+              ;;
+            esac
+          ;;
+          "create")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-comment=" -- ${cur}))
+                return 0
+              fi
+            fi
+          ;;
+          "drop")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-force" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+          "import")
+            case $numargs in
+              0)
+                if [[ "$cur" == -* ]]; then
+                  COMPREPLY=($(compgen -W "-with-deps -dry-run" -- ${cur}))
+                else
+                  COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+                fi
+                return 0
+              ;;
+              1)
+                COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+                return 0
+              ;;
+            esac
+          ;;
+          "remove")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-dry-run" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+          "show")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-with-packages" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
               fi
               return 0
             fi
