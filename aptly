@@ -320,7 +320,7 @@ _aptly()
           ;;
           "pull")
             if [[ $numargs -eq 0 ]] && [[ "$cur" == -* ]]; then
-              COMPREPLY=($(compgen -W "-dry-run -no-deps" -- ${cur}))
+              COMPREPLY=($(compgen -W "-dry-run -no-deps -no-remove" -- ${cur}))
               return 0
             fi
 
