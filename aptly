@@ -212,7 +212,7 @@ _aptly()
           "create")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-comment=" -- ${cur}))
+                COMPREPLY=($(compgen -W "-comment= -distribution= -component=" -- ${cur}))
                 return 0
               fi
             fi
