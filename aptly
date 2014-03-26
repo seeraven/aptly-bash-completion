@@ -62,7 +62,7 @@ _aptly()
 
     db_subcommands="cleanup"
     mirror_subcommands="create drop show list update"
-    publish_subcommands="drop list snapshot"
+    publish_subcommands="drop list repo snapshot"
     snapshot_subcommands="create diff drop list merge pull show verify"
     repo_subcommands="add copy create drop import list move remove show"
 
@@ -349,12 +349,16 @@ _aptly()
       ;;
       "publish")
         case "$subcmd" in
-          "snapshot")
+          "snapshot"|"repo")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
                 COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key= -keyring= -secret-keyring= -skip-signing" -- ${cur}))
               else
-                COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+                if [[ "$subcmd" == "snapshot" ]]; then
+                  COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+                else
+                  COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+                fi
               fi
               return 0
             fi
