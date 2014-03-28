@@ -64,7 +64,7 @@ _aptly()
     mirror_subcommands="create drop show list update"
     publish_subcommands="drop list repo snapshot"
     snapshot_subcommands="create diff drop list merge pull show verify"
-    repo_subcommands="add copy create drop import list move remove show"
+    repo_subcommands="add copy create drop edit import list move remove show"
 
     local cmd subcmd numargs numoptions i
 
@@ -221,6 +221,16 @@ _aptly()
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
                 COMPREPLY=($(compgen -W "-force" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+          "edit")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-comment= -distribution= -component=" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
               fi
