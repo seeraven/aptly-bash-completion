@@ -60,7 +60,7 @@ _aptly()
     commands="db graph mirror publish repo serve snapshot version"
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
-    db_subcommands="cleanup"
+    db_subcommands="cleanup recover"
     mirror_subcommands="create drop show list update"
     publish_subcommands="drop list repo snapshot"
     snapshot_subcommands="create diff drop list merge pull show verify"
