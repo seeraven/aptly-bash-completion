@@ -39,17 +39,17 @@ __aptly_snapshot_list()
 
 __aptly_published_distributions()
 {
-  aptly publish list | awk '/^  \* / { n = split($2,a,/\//); print a[n] }' | sort | uniq
+  aptly publish list -raw | cut -d ' ' -f 2 | sort | uniq
 }
 
 __aptly_published_prefixes()
 {
-  aptly publish list | awk '/^  \* / { n = split($2,a,/\//); result = a[1]; for (i = 2; i < n; i++) result = result "/" a[i]; print result }' | sort | uniq
+  aptly publish list -raw | cut -d ' ' -f 1 | sort | uniq
 }
 
 __aptly_prefixes_for_distribution()
 {
-  aptly publish list | awk -v dist="$1" '/^  \* / { n = split($2,a,/\//); result = a[1]; for (i = 2; i < n; i++) result = result "/" a[i]; if (dist == a[n]) print result }' | sort | uniq
+  aptly publish list -raw | awk -v dist="$1" '{ if (dist == $2) print $1 }' | sort | uniq
 }
 
 _aptly()
@@ -393,6 +393,12 @@ _aptly()
 
             if [[ $numargs -eq 1 ]]; then
               COMPREPLY=($(compgen -W "$(__aptly_published_prefixes)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "list")
+            if [[ $numargs -eq 0 ]]; then
+                COMPREPLY=($(compgen -W "-raw" -- ${cur}))
               return 0
             fi
           ;;
