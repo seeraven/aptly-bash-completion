@@ -380,7 +380,7 @@ _aptly()
           "snapshot"|"repo")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key= -keyring= -secret-keyring= -skip-signing" -- ${cur}))
+                COMPREPLY=($(compgen -W "-distribution= -component= -gpg-key= -keyring= -label= -origin= -secret-keyring= -skip-signing" -- ${cur}))
               else
                 if [[ "$subcmd" == "snapshot" ]]; then
                   COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
