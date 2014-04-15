@@ -24,17 +24,17 @@
 
 __aptly_mirror_list()
 {
-  aptly mirror list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
+  aptly mirror list -raw
 }
 
 __aptly_repo_list()
 {
-  aptly repo list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
+  aptly repo list -raw
 }
 
 __aptly_snapshot_list()
 {
-  aptly snapshot list | awk '/^ \* \[[^]]+\]/ { sub(/^ \* \[/, ""); sub(/\].+$/, ""); print }'
+  aptly snapshot list -raw
 }
 
 __aptly_published_distributions()
@@ -162,6 +162,12 @@ _aptly()
               return 0
             fi
           ;;
+          "list")
+            if [[ $numargs -eq 0 ]]; then
+                COMPREPLY=($(compgen -W "-raw" -- ${cur}))
+              return 0
+            fi
+          ;;
           "update")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
@@ -234,6 +240,12 @@ _aptly()
               else
                 COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
               fi
+              return 0
+            fi
+          ;;
+          "list")
+            if [[ $numargs -eq 0 ]]; then
+                COMPREPLY=($(compgen -W "-raw" -- ${cur}))
               return 0
             fi
           ;;
@@ -319,6 +331,12 @@ _aptly()
               else
                 COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               fi
+              return 0
+            fi
+          ;;
+          "list")
+            if [[ $numargs -eq 0 ]]; then
+                COMPREPLY=($(compgen -W "-raw" -- ${cur}))
               return 0
             fi
           ;;
