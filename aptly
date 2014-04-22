@@ -62,7 +62,7 @@ _aptly()
 
     db_subcommands="cleanup recover"
     mirror_subcommands="create drop show list update"
-    publish_subcommands="drop list repo snapshot update"
+    publish_subcommands="drop list repo snapshot switch update"
     snapshot_subcommands="create diff drop list merge pull show verify"
     repo_subcommands="add copy create drop edit import list move remove show"
 
@@ -414,6 +414,26 @@ _aptly()
 
             if [[ $numargs -eq 1 ]]; then
               COMPREPLY=($(compgen -W "$(__aptly_prefixes_for_distribution $prev)" -- ${cur}))
+              return 0
+            fi
+          ;;
+          "switch")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-gpg-key= -keyring= -secret-keyring= -skip-signing" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_published_distributions)" -- ${cur}))
+              fi
+              return 0
+            fi
+
+            if [[ $numargs -eq 1 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_prefixes_for_distribution $prev)" -- ${cur}))
+              return 0
+            fi
+
+            if [[ $numargs -eq 2 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               return 0
             fi
           ;;
