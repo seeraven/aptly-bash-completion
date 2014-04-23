@@ -342,7 +342,11 @@ _aptly()
           ;;
           "merge")
             if [[ $numargs -gt 0 ]]; then
-              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-latest" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+              fi
               return 0
             fi
           ;;
