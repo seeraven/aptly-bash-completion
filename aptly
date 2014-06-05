@@ -424,7 +424,7 @@ _aptly()
           "switch")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-gpg-key= -keyring= -secret-keyring= -skip-signing" -- ${cur}))
+                COMPREPLY=($(compgen -W "-component= -gpg-key= -keyring= -secret-keyring= -skip-signing" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_published_distributions)" -- ${cur}))
               fi
@@ -436,7 +436,7 @@ _aptly()
               return 0
             fi
 
-            if [[ $numargs -eq 2 ]]; then
+            if [[ $numargs -ge 2 ]]; then
               COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               return 0
             fi
