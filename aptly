@@ -137,7 +137,7 @@ _aptly()
           "create")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-ignore-signatures -keyring= -with-sources" -- ${cur}))
+                COMPREPLY=($(compgen -W "-filter= -filter-with-deps -ignore-signatures -keyring= -with-sources" -- ${cur}))
                 return 0
               fi
             fi
