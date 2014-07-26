@@ -142,6 +142,16 @@ _aptly()
               fi
             fi
           ;;
+          "edit")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-filter= -filter-with-deps" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
           "show")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
