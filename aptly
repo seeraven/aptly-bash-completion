@@ -61,10 +61,10 @@ _aptly()
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
     db_subcommands="cleanup recover"
-    mirror_subcommands="create drop show list update"
+    mirror_subcommands="create drop show list rename update"
     publish_subcommands="drop list repo snapshot switch update"
-    snapshot_subcommands="create diff drop list merge pull show verify"
-    repo_subcommands="add copy create drop edit import list move remove show"
+    snapshot_subcommands="create diff drop list merge pull rename show verify"
+    repo_subcommands="add copy create drop edit import list move remove rename show"
 
     local cmd subcmd numargs numoptions i
 
@@ -149,6 +149,12 @@ _aptly()
               else
                 COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
               fi
+              return 0
+            fi
+          ;;
+          "rename")
+            if [[ $numargs -eq 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
               return 0
             fi
           ;;
@@ -285,6 +291,12 @@ _aptly()
               return 0
             fi
           ;;
+          "rename")
+            if [[ $numargs -eq 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
+              return 0
+            fi
+          ;;
         esac
       ;;
       "snapshot")
@@ -368,6 +380,12 @@ _aptly()
               else
                 COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               fi
+              return 0
+            fi
+          ;;
+          "rename")
+            if [[ $numargs -eq 0 ]]; then
+              COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               return 0
             fi
           ;;
