@@ -358,7 +358,7 @@ _aptly()
           ;;
           "list")
             if [[ $numargs -eq 0 ]]; then
-                COMPREPLY=($(compgen -W "-raw" -- ${cur}))
+                COMPREPLY=($(compgen -W "-raw -sort=" -- ${cur}))
               return 0
             fi
           ;;
@@ -374,7 +374,7 @@ _aptly()
           ;;
           "pull")
             if [[ $numargs -eq 0 ]] && [[ "$cur" == -* ]]; then
-              COMPREPLY=($(compgen -W "-dry-run -no-deps -no-remove" -- ${cur}))
+              COMPREPLY=($(compgen -W "-all-matches -dry-run -no-deps -no-remove" -- ${cur}))
               return 0
             fi
 
