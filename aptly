@@ -57,7 +57,7 @@ _aptly()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="db graph mirror publish repo serve snapshot version"
+    commands="db graph mirror package publish repo serve snapshot version"
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
     db_subcommands="cleanup recover"
@@ -65,6 +65,7 @@ _aptly()
     publish_subcommands="drop list repo snapshot switch update"
     snapshot_subcommands="create diff drop list merge pull rename search show verify"
     repo_subcommands="add copy create drop edit import list move remove rename search show"
+    package_subcommands="search show"
 
     local cmd subcmd numargs numoptions i
 
@@ -124,6 +125,10 @@ _aptly()
             ;;
             "publish")
               COMPREPLY=($(compgen -W "${publish_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            "package")
+              COMPREPLY=($(compgen -W "${package_subcommands}" -- ${cur}))
               return 0
             ;;
             *)
@@ -507,6 +512,18 @@ _aptly()
 
             if [[ $numargs -eq 1 ]]; then
               COMPREPLY=($(compgen -W "$(__aptly_prefixes_for_distribution $prev)" -- ${cur}))
+              return 0
+            fi
+          ;;
+        esac
+      ;;
+      "package")
+        case "$subcmd" in
+          "show")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-with-files -with-references" -- ${cur}))
+              fi
               return 0
             fi
           ;;
