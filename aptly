@@ -217,7 +217,7 @@ _aptly()
             case $numargs in
               0)
                 if [[ "$cur" == -* ]]; then
-                  COMPREPLY=($(compgen -W "-remove-files" -- ${cur}))
+                  COMPREPLY=($(compgen -W "-force-replace -remove-files" -- ${cur}))
                 else
                   COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
                 fi
