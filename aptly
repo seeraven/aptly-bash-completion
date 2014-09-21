@@ -411,7 +411,7 @@ _aptly()
           "filter")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-dry-run -with-deps" -- ${cur}))
+                COMPREPLY=($(compgen -W "-with-deps" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               fi
