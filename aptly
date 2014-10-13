@@ -57,7 +57,7 @@ _aptly()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="db graph mirror package publish repo serve snapshot version"
+    commands="db graph mirror package publish repo serve snapshot task version"
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
     db_subcommands="cleanup recover"
@@ -66,6 +66,7 @@ _aptly()
     snapshot_subcommands="create diff drop filter list merge pull rename search show verify"
     repo_subcommands="add copy create drop edit import list move remove rename search show"
     package_subcommands="search show"
+    task_subcommands="run"
 
     local cmd subcmd numargs numoptions i
 
@@ -129,6 +130,10 @@ _aptly()
             ;;
             "package")
               COMPREPLY=($(compgen -W "${package_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            "task")
+              COMPREPLY=($(compgen -W "${task_subcommands}" -- ${cur}))
               return 0
             ;;
             *)
