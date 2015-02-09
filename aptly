@@ -57,7 +57,7 @@ _aptly()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="config db graph mirror package publish repo serve snapshot task version"
+    commands="api config db graph mirror package publish repo serve snapshot task version"
     options="-architectures= -config= -dep-follow-all-variants -dep-follow-recommends -dep-follow-source -dep-follow-suggests"
 
     db_subcommands="cleanup recover"
@@ -68,6 +68,7 @@ _aptly()
     package_subcommands="search show"
     task_subcommands="run"
     config_subcommands="show"
+    api_subcommands="serve"
 
     local cmd subcmd numargs numoptions i
 
@@ -139,6 +140,10 @@ _aptly()
             ;;
             "config")
               COMPREPLY=($(compgen -W "${config_subcommands}" -- ${cur}))
+              return 0
+            ;;
+            "api")
+              COMPREPLY=($(compgen -W "${api_subcommands}" -- ${cur}))
               return 0
             ;;
             *)
@@ -554,6 +559,18 @@ _aptly()
           COMPREPLY=($(compgen -W "-listen=" -- ${cur}))
           return 0
         fi
+      ;;
+      "api")
+        case "$subcmd" in
+          "serve")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-listen=" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
+        esac
       ;;
     esac
 } && complete -F _aptly aptly
