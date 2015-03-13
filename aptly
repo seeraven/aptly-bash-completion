@@ -531,7 +531,11 @@ _aptly()
           ;;
           "drop")
             if [[ $numargs -eq 0 ]]; then
-              COMPREPLY=($(compgen -W "$(__aptly_published_distributions)" -- ${cur}))
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-force-drop" -- ${cur}))
+              else
+                COMPREPLY=($(compgen -W "$(__aptly_published_distributions)" -- ${cur}))
+              fi
               return 0
             fi
 
