@@ -64,7 +64,7 @@ _aptly()
     mirror_subcommands="create drop show list rename search update"
     publish_subcommands="drop list repo snapshot switch update"
     snapshot_subcommands="create diff drop filter list merge pull rename search show verify"
-    repo_subcommands="add copy create drop edit import list move remove rename search show"
+    repo_subcommands="add copy create drop edit import include list move remove rename search show"
     package_subcommands="search show"
     task_subcommands="run"
     config_subcommands="show"
@@ -239,7 +239,7 @@ _aptly()
                 return 0
               ;;
               1)
-                local files=$(find . -mindepth 1 -maxdepth 1  \( -type d -or -name \*.deb -or -name \*.dsc \) -exec basename {} \;)
+                local files=$(find . -mindepth 1 -maxdepth 1  \( -type d -or -name \*.deb -or -name \*.dsc -or -name \*.udeb \) -exec basename {} \;)
                 COMPREPLY=($(compgen -W "${files}" -- ${cur}))
                 return 0
               ;;
@@ -304,6 +304,20 @@ _aptly()
                 COMPREPLY=($(compgen -W "-raw" -- ${cur}))
               return 0
             fi
+          ;;
+          "include")
+            case $numargs in
+              0)
+                if [[ "$cur" == -* ]]; then
+                  COMPREPLY=($(compgen -W "-accept-unsigned -force-replace -ignore-signatures -keyring -no-remove-files -repo" -- ${cur}))
+                else
+                  comptopt -o filenames 2>/dev/null
+                  COMPREPLY=($(compgen -f -- ${cur}))
+                  return 0
+                fi
+                return 0
+              ;;
+            esac
           ;;
           "import")
             case $numargs in
