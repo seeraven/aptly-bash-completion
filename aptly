@@ -309,7 +309,7 @@ _aptly()
             case $numargs in
               0)
                 if [[ "$cur" == -* ]]; then
-                  COMPREPLY=($(compgen -W "-accept-unsigned -force-replace -ignore-signatures -keyring -no-remove-files -repo" -- ${cur}))
+                  COMPREPLY=($(compgen -W "-accept-unsigned -force-replace -ignore-signatures -keyring -no-remove-files -repo -uploaders-file" -- ${cur}))
                 else
                   comptopt -o filenames 2>/dev/null
                   COMPREPLY=($(compgen -f -- ${cur}))
