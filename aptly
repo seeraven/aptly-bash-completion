@@ -264,7 +264,7 @@ _aptly()
           "create")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-comment= -distribution= -component=" -- ${cur}))
+                COMPREPLY=($(compgen -W "-comment= -distribution= -component= -uploaders-file=" -- ${cur}))
                 return 0
               fi
             fi
@@ -282,7 +282,7 @@ _aptly()
           "edit")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-comment= -distribution= -component=" -- ${cur}))
+                COMPREPLY=($(compgen -W "-comment= -distribution= -component= -uploaders-file=" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
               fi
@@ -309,7 +309,7 @@ _aptly()
             case $numargs in
               0)
                 if [[ "$cur" == -* ]]; then
-                  COMPREPLY=($(compgen -W "-accept-unsigned -force-replace -ignore-signatures -keyring -no-remove-files -repo -uploaders-file" -- ${cur}))
+                  COMPREPLY=($(compgen -W "-accept-unsigned -force-replace -ignore-signatures -keyring= -no-remove-files -repo= -uploaders-file=" -- ${cur}))
                 else
                   comptopt -o filenames 2>/dev/null
                   COMPREPLY=($(compgen -f -- ${cur}))
@@ -575,6 +575,12 @@ _aptly()
       "serve")
         if [[ "$cur" == -* ]]; then
           COMPREPLY=($(compgen -W "-listen=" -- ${cur}))
+          return 0
+        fi
+      ;;
+      "graph")
+        if [[ "$cur" == -* ]]; then
+          COMPREPLY=($(compgen -W "-format=" -- ${cur}))
           return 0
         fi
       ;;
