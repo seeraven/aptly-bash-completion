@@ -580,7 +580,7 @@ _aptly()
       ;;
       "graph")
         if [[ "$cur" == -* ]]; then
-          COMPREPLY=($(compgen -W "-format=" -- ${cur}))
+          COMPREPLY=($(compgen -W "-format= -output=" -- ${cur}))
           return 0
         fi
       ;;
