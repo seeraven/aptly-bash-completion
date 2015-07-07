@@ -185,7 +185,7 @@ _aptly()
           "search")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-with-deps" -- ${cur}))
+                COMPREPLY=($(compgen -W "-format= -with-deps" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_mirror_list)" -- ${cur}))
               fi
@@ -292,7 +292,7 @@ _aptly()
           "search")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-with-deps" -- ${cur}))
+                COMPREPLY=($(compgen -W "-format= -with-deps" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_repo_list)" -- ${cur}))
               fi
@@ -460,7 +460,7 @@ _aptly()
           "search")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-with-deps" -- ${cur}))
+                COMPREPLY=($(compgen -W "-format= -with-deps" -- ${cur}))
               else
                 COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
               fi
@@ -562,6 +562,14 @@ _aptly()
       ;;
       "package")
         case "$subcmd" in
+          "search")
+            if [[ $numargs -eq 0 ]]; then
+              if [[ "$cur" == -* ]]; then
+                COMPREPLY=($(compgen -W "-format=" -- ${cur}))
+              fi
+              return 0
+            fi
+          ;;
           "show")
             if [[ $numargs -eq 0 ]]; then
               if [[ "$cur" == -* ]]; then
