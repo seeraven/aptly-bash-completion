@@ -15,7 +15,6 @@ Download bash completions to `/etc/bash_completion.d`:
 
 Bash completion can be installed using [homebrew](http://brew.sh/) completions tap:
 
-      brew tap homebrew/completions
       brew install homebrew/completions/aptly-completion
   
 Then load bash completions from your `~/.bashrc`:
