@@ -239,8 +239,7 @@ _aptly()
                 return 0
               ;;
               1)
-                local files=$(find . -mindepth 1 -maxdepth 1  \( -type d -or -name \*.deb -or -name \*.dsc -or -name \*.udeb \) -exec basename {} \;)
-                COMPREPLY=($(compgen -W "${files}" -- ${cur}))
+                _filedir '@(deb|dsc|udeb)'
                 return 0
               ;;
             esac
