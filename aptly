@@ -261,12 +261,27 @@ _aptly()
             esac
           ;;
           "create")
-            if [[ $numargs -eq 0 ]]; then
-              if [[ "$cur" == -* ]]; then
-                COMPREPLY=($(compgen -W "-comment= -distribution= -component= -uploaders-file=" -- ${cur}))
+            case $numargs in
+              0)
+                if [[ "$cur" == -* ]]; then
+                  COMPREPLY=($(compgen -W "-comment= -distribution= -component= -uploaders-file=" -- ${cur}))
+                  return 0
+                fi
                 return 0
-              fi
-            fi
+              ;;
+              1)
+                COMPREPLY=($(compgen -W "from" -- ${cur}))
+                return 0
+              ;;
+              2)
+                COMPREPLY=($(compgen -W "snapshot" -- ${cur}))
+                return 0
+              ;;
+              3)
+                COMPREPLY=($(compgen -W "$(__aptly_snapshot_list)" -- ${cur}))
+                return 0
+              ;;
+            esac
           ;;
           "drop")
             if [[ $numargs -eq 0 ]]; then
